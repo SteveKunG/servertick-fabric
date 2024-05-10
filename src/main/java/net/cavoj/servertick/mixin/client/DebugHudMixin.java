@@ -15,6 +15,8 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyConstant;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+import com.llamalad7.mixinextras.sugar.Local;
+
 @Mixin(DebugHud.class)
 public abstract class DebugHudMixin {
     @Shadow @Final private MinecraftClient client;
@@ -24,14 +26,12 @@ public abstract class DebugHudMixin {
 
     @Shadow private boolean showDebugHud;
 
-    @Inject(method = "method_51746", at = @At(value = "INVOKE", target = "net/minecraft/client/gui/hud/debug/RenderingChart.render(Lnet/minecraft/client/gui/DrawContext;II)V", ordinal = 0))
-    private void render(DrawContext context, CallbackInfo ci) {
+    @Inject(method = "method_51746", at = @At(value = "INVOKE", target = "net/minecraft/client/gui/hud/debug/RenderingChart.render(Lnet/minecraft/client/gui/DrawContext;II)V"))
+    private void render(DrawContext context, CallbackInfo ci, @Local(ordinal = 0) int i, @Local(ordinal = 1) int j) {
         if (this.client.getServer() == null &&
                 this.renderingAndTickChartsVisible &&
                 ServerTickClient.getInstance().getServerResponded()) {
             this.client.getProfiler().push("debug");
-            int i = context.getScaledWindowWidth();
-            int j = i / 2;
             int k = this.tickChart.getWidth(j);
             this.tickChart.render(context, i - k, k);
             this.client.getProfiler().pop();

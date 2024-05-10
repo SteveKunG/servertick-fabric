@@ -1,10 +1,6 @@
-gradlew
-gradlew.bat
-
 # gradle
 
 .gradle/
-gradle/
 build/
 out/
 classes/
